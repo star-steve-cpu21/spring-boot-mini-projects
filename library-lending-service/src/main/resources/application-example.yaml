@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: library-lending-service
+
+server:
+  port: 8081
+
+db:
+  url: jdbc:postgresql://<DB_HOST>:<DB_PORT>/<DB_NAME>
+  user: <DB_USER>
+  password: <DB_PASSWORD>
