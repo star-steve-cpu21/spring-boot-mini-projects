@@ -1,6 +1,7 @@
 package com.steve.librarylendingservice.controller;
 
-import com.steve.librarylendingservice.model.Book;
+import com.steve.librarylendingservice.dto.BookFilter;
+import com.steve.librarylendingservice.dto.BookResponseDto;
 import com.steve.librarylendingservice.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,12 @@ public class BookController {
     public BookService bookService;
 
     @GetMapping(path = "/all")
-    public ResponseEntity<List<Book>> getAllBooks() {
+    public ResponseEntity<List<BookResponseDto>> getAllBooks() {
         return ResponseEntity.ok(bookService.getAllBooks());
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<BookResponseDto>> getBooksByFilters(BookFilter bookFilter) {
+        return ResponseEntity.ok(bookService.getBooksByFilters(bookFilter));
     }
 }
