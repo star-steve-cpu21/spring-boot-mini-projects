@@ -1,7 +1,6 @@
 package com.steve.librarylendingservice.repository;
 
-import com.steve.librarylendingservice.dto.BookFilter;
-import com.steve.librarylendingservice.dto.BookResponseDto;
+import com.steve.librarylendingservice.dto.*;
 import com.steve.librarylendingservice.util.Db;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Repository
@@ -122,6 +120,63 @@ public class BookRepository {
         } catch (SQLException e) {
             log.error("Error at BookRepository.selectBookByFilters: ", e);
             return null;
+        }
+    }
+
+    public OperationResponse insertNewBook(AddBookRequestDto bookInput) {
+        try {
+            var conn = Db.getConn();
+            String QUERY = """
+                    INSERT INTO book(title, description, author, isbn, num_of_pages)
+                    VALUES(?, ?, ?, ?, ?)
+                """;
+            PreparedStatement stmt = conn.prepareStatement(QUERY);
+
+            stmt.setString(1, bookInput.getTitle());
+            stmt.setString(2, bookInput.getDescription());
+            stmt.setString(3, bookInput.getAuthor());
+            stmt.setString(4, bookInput.getIsbn());
+            stmt.setInt(5, bookInput.getNumOfPages());
+            var rowCount = stmt.executeUpdate();
+
+            if (rowCount == 1) {
+                return new OperationResponse(true, "SUCCESS_INSERT_BOOK",
+                        "Successful insert book", null);
+            } else {
+                return new OperationResponse(false, "UNKNOWN_ERROR_INSERT_BOOK",
+                        "Failed insert book", null);
+            }
+        } catch (SQLException e) {
+            log.error("Error at BookRepository.insertNewBook: ", e);
+            return new OperationResponse(false, "ERROR_INSERT_BOOK",
+                    "Failed insert book: " + e, null);
+        }
+    }
+
+    public OperationResponse insertNewBookCopy(AddBookCopyRequestDto bookCopyInput) {
+        try {
+            var conn = Db.getConn();
+            String QUERY = """
+                    INSERT INTO book_copy(book_id, barcode)
+                    VALUES(?, ?)
+                """;
+            PreparedStatement stmt = conn.prepareStatement(QUERY);
+
+            stmt.setObject(1, bookCopyInput.getBookId());
+            stmt.setString(2, bookCopyInput.getBarcode());
+            var rowCount = stmt.executeUpdate();
+
+            if (rowCount == 1) {
+                return new OperationResponse(true, "SUCCESS_INSERT_BOOK_COPY",
+                        "Successful insert book copy", null);
+            } else {
+                return new OperationResponse(false, "UNKNOWN_ERROR_INSERT_BOOK_COPY",
+                        "Failed insert book copy", null);
+            }
+        } catch (SQLException e) {
+            log.error("Error at BookRepository.insertNewBookCopy: ", e);
+            return new OperationResponse(false, "ERROR_INSERT_BOOK_COPY",
+                    "Failed insert book copy: " + e, null);
         }
     }
 }
