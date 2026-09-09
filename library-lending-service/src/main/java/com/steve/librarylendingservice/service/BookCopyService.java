@@ -2,7 +2,7 @@ package com.steve.librarylendingservice.service;
 
 import com.steve.librarylendingservice.dto.AddBookCopyRequestDto;
 import com.steve.librarylendingservice.dto.OperationResponse;
-import com.steve.librarylendingservice.repository.BookRepository;
+import com.steve.librarylendingservice.repository.BookCopyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class BookCopyService {
 
     @Autowired
-    private BookRepository bookRepository;
+    private BookCopyRepository bookCopyRepository;
 
     public OperationResponse addNewBookCopy(AddBookCopyRequestDto bookCopy) {
         if (bookCopy.getBookId() == null
@@ -18,6 +18,6 @@ public class BookCopyService {
             return new OperationResponse(false, "INCOMPLETE_REQ_BODY",
                     "Incomplete request body.", null);
         }
-        return bookRepository.insertNewBookCopy(bookCopy);
+        return bookCopyRepository.insertNewBookCopy(bookCopy);
     }
 }
