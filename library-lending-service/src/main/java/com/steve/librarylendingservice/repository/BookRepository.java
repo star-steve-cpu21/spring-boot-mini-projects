@@ -152,4 +152,66 @@ public class BookRepository {
                     "Failed insert book: " + e, null);
         }
     }
+
+    public OperationResponse updateBookById(UpdateBookRequestDto bookInput) {
+        try {
+            var conn = Db.getConn();
+            String QUERY = """
+                    UPDATE book
+                    SET title = COALESCE(?, title),
+                        description = COALESCE(?, description),
+                        isbn = COALESCE(?, isbn),
+                        author = COALESCE(?, author),
+                        num_of_pages = COALESCE(?, num_of_pages)
+                    WHERE id = ?
+                """;
+            PreparedStatement stmt = conn.prepareStatement(QUERY);
+
+            stmt.setString(1, bookInput.getTitle());
+            stmt.setString(2, bookInput.getDescription());
+            stmt.setString(3, bookInput.getAuthor());
+            stmt.setString(4, bookInput.getIsbn());
+            stmt.setInt(5, bookInput.getNumOfPages());
+            stmt.setObject(6, bookInput.getId());
+            var rowCount = stmt.executeUpdate();
+
+            if (rowCount == 1) {
+                return new OperationResponse(true, "SUCCESS_UPDATE_BOOK",
+                        "Successful update book", null);
+            } else {
+                return new OperationResponse(false, "UNKNOWN_ERROR_UPDATE_BOOK",
+                        "Failed update book", null);
+            }
+        } catch (SQLException e) {
+            log.error("Error at BookRepository.updateBookById: ", e);
+            return new OperationResponse(false, "ERROR_UPDATE_BOOK",
+                    "Failed update book: " + e, null);
+        }
+    }
+
+    public OperationResponse deleteBookbyId(DeleteBookRequestDto bookInput) {
+        try {
+            var conn = Db.getConn();
+            String QUERY = """
+                    DELETE FROM book
+                    WHERE id = ?
+                """;
+            PreparedStatement stmt = conn.prepareStatement(QUERY);
+
+            stmt.setObject(1, bookInput.getId());
+            var rowCount = stmt.executeUpdate();
+
+            if (rowCount == 1) {
+                return new OperationResponse(true, "SUCCESS_DELETE_BOOK",
+                        "Successful delete book", null);
+            } else {
+                return new OperationResponse(false, "UNKNOWN_ERROR_DELETE_BOOK",
+                        "Failed delete book", null);
+            }
+        } catch (SQLException e) {
+            log.error("Error at BookRepository.updateBookById: ", e);
+            return new OperationResponse(false, "ERROR_DELETE_BOOK",
+                    "Failed delete book: " + e, null);
+        }
+    }
 }

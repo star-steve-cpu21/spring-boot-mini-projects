@@ -1,7 +1,9 @@
 package com.steve.librarylendingservice.service;
 
 import com.steve.librarylendingservice.dto.AddBookCopyRequestDto;
+import com.steve.librarylendingservice.dto.DeleteBookCopyRequestDto;
 import com.steve.librarylendingservice.dto.OperationResponse;
+import com.steve.librarylendingservice.dto.UpdateBookCopyRequestDto;
 import com.steve.librarylendingservice.repository.BookCopyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,5 +21,17 @@ public class BookCopyService {
                     "Incomplete request body.", null);
         }
         return bookCopyRepository.insertNewBookCopy(bookCopy);
+    }
+
+    public OperationResponse updateBookCopyById(UpdateBookCopyRequestDto bookCopy) {
+        if (bookCopy.getBarcode().length() != 12) {
+            return new OperationResponse(false, "INVALID_REQ_BODY",
+                    "Invalid barcode.", null);
+        }
+        return bookCopyRepository.updateBookCopyById(bookCopy);
+    }
+
+    public OperationResponse deleteBookCopyById(DeleteBookCopyRequestDto bookCopy) {
+        return bookCopyRepository.deleteBookCopyById(bookCopy);
     }
 }

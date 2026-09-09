@@ -1,9 +1,6 @@
 package com.steve.librarylendingservice.service;
 
-import com.steve.librarylendingservice.dto.AddBookRequestDto;
-import com.steve.librarylendingservice.dto.BookFilter;
-import com.steve.librarylendingservice.dto.BookResponseDto;
-import com.steve.librarylendingservice.dto.OperationResponse;
+import com.steve.librarylendingservice.dto.*;
 import com.steve.librarylendingservice.repository.BookRepository;
 import jdk.dynalink.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +32,13 @@ public class BookService {
                     "Incomplete request body.", null);
         }
         return bookRepository.insertNewBook(book);
+    }
+
+    public OperationResponse updateBookById(UpdateBookRequestDto book) {
+        return bookRepository.updateBookById(book);
+    }
+
+    public OperationResponse deleteBookById(DeleteBookRequestDto book) {
+        return bookRepository.deleteBookbyId(book);
     }
 }
